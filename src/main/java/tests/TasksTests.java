@@ -1,39 +1,37 @@
+package tests;
+
 import io.appium.java_client.MobileBy;
-import io.appium.java_client.MobileElement;
-import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
-import io.appium.java_client.remote.AndroidMobileCapabilityType;
-import io.appium.java_client.remote.MobileCapabilityType;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 
-public class TasksTests {
-    private static AndroidDriver driver;
+public class TasksTests extends BaseTest {
 
     @BeforeClass
-    public static void setup() throws MalformedURLException, InterruptedException {
-        DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, "Android");
-        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "10.0");
-        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "emulator-5554");
-        capabilities.setCapability(AndroidMobileCapabilityType.APP_PACKAGE, "com.gotit");
-        capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, ".MainActivity");
-        capabilities.setCapability(MobileCapabilityType.NO_RESET, "true");
+    public static void initTest() throws InterruptedException {
+        AndroidElement loginButtonHomePage = (AndroidElement) driver.findElementByXPath("//android.widget.TextView[contains(@text, 'Login') and @index = '0']");
+        loginButtonHomePage.click();
 
-        driver = new AndroidDriver<>(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
-        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+        Thread.sleep(1000);
+
+        AndroidElement emailInput = (AndroidElement) driver.findElementByXPath("//android.widget.EditText[@text='Email']");
+        AndroidElement passwordInput = (AndroidElement) driver.findElementByXPath("//android.widget.EditText[@text='Password']");
+
+        String email = "testuser@gmail.com";
+        String password = "Ab123456";
+
+        emailInput.clear();
+        emailInput.sendKeys(email);
+        passwordInput.clear();
+        passwordInput.sendKeys(password);
+
+        AndroidElement loginButtonLoginPage = (AndroidElement) driver.findElementByXPath("(//android.widget.TextView[@text='Login'])[2]");;
+        loginButtonLoginPage.click();
 
         Thread.sleep(3000);
 
@@ -101,11 +99,5 @@ public class TasksTests {
 
         AndroidElement tasksListTitleSubTask = (AndroidElement) driver.findElementByXPath("//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[2]/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]/android.view.ViewGroup/android.widget.TextView[2]");
         assertEquals("Tennis", tasksListTitleSubTask.getText());
-    }
-
-    @AfterClass
-    public static void quit() throws InterruptedException {
-        Thread.sleep(3000);
-        driver.quit();
     }
 }
